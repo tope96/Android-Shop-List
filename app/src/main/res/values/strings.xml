@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">firstProject</string>
+    <string name="app_name">Lista zakupów</string>
+    <string name="btListText">Lista</string>
+    <string name="btOptionsText">Opcje</string>
+    <string name="fontSizeText">Wielkość czcionki</string>
+    <string name="fontSizeTextHint">czcionka</string>
+    <string name="fontSizeUnit">dp</string>
+    <string name="colorText">Kolor:</string>
+    <string name="saveText">Zapisz</string>
+    <string name="saveSuccess">Zapisano!</string>
 </resources>
