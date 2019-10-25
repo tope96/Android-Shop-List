@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimaryVeryDark</item>
+        <item name="colorAccent">@color/colorAccentVeryDark</item>
+        <item name="android:colorBackground">@color/colorBackgroundVeryDark</item>
+        <item name="android:textColor">@color/colorTextVeryDark</item>
+        <item name="android:colorButtonNormal">@color/colorButtonVeryDark</item>
+    </style>
+
 </resources>

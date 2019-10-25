@@ -4,7 +4,7 @@
     <string name="btOptionsText">Opcje</string>
     <string name="fontSizeText">Wielkość czcionki</string>
     <string name="fontSizeTextHint">czcionka</string>
-    <string name="fontSizeUnit">dp</string>
+    <string name="fontSizeUnit">sp</string>
     <string name="colorText">Kolor:</string>
     <string name="saveText">Zapisz</string>
     <string name="saveSuccess">Zapisano!</string>

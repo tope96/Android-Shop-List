@@ -20,19 +20,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        boolean darkMode = preferences.getBoolean("darkTheme", true);
+        changeTheme(darkMode);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         tvFontSize = findViewById(R.id.tvTest);
-        preferences =  getSharedPreferences("settings", Context.MODE_PRIVATE);
+
     }
 
     @Override
     protected void onStart() {
+        boolean darkMode = preferences.getBoolean("darkTheme", true);
+        changeTheme(darkMode);
         super.onStart();
-
-        int fontSize = preferences.getInt("etFontSize", 10);
+        int fontSize = preferences.getInt("etFontSize", 25);
         tvFontSize.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
     }
+
 
     public void listShow(View view) {
         Intent in = new Intent(this, list.class);
@@ -42,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
     public void optionsShow(View view) {
         Intent in = new Intent(this, options.class);
         startActivity(in);
+    }
+
+
+    private void changeTheme(boolean dark){
+        if(dark){
+            setTheme(R.style.AppTheme2);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
+
     }
 
 
