@@ -28,7 +28,7 @@ public class options extends AppCompatActivity {
         etFontSize = findViewById(R.id.etFontSize);
         tvColor = findViewById(R.id.tvColor);
         tvFontSize = findViewById(R.id.tvFontSize);
-        sp = getPreferences(Context.MODE_PRIVATE);
+        sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
         editor = sp.edit();
 
     }
