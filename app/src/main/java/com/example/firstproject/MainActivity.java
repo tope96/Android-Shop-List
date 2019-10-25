@@ -42,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void listShow(View view) {
+        boolean darkMode = preferences.getBoolean("darkTheme", true);
         Intent in = new Intent(this, list.class);
+        in.putExtra("darkMode", darkMode);
         startActivity(in);
     }
 
