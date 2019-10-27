@@ -54,6 +54,7 @@ public class options extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(options.this, MainActivity.class));
+
     }
 
 
@@ -104,6 +105,8 @@ public class options extends AppCompatActivity {
 
     private void restartApp(){
         Intent i = new Intent(getApplicationContext(), options.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
         finish();
     }
