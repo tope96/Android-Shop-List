@@ -5,7 +5,7 @@
     <string name="fontSizeText">Wielkość czcionki</string>
     <string name="fontSizeTextHint">czcionka</string>
     <string name="fontSizeUnit">sp</string>
-    <string name="colorText">Kolor:</string>
+    <string name="colorText">Ciemny motyw:</string>
     <string name="saveText">Zapisz</string>
     <string name="saveSuccess">Zapisano!</string>
 </resources>
