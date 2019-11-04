@@ -1,6 +1,9 @@
 package com.example.firstproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +13,18 @@ import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvFontSize;
     private SharedPreferences preferences;
+    private RecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         int fontSize = preferences.getInt("etFontSize", 25);
         tvFontSize.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
     }
+
 
 
     public void listShow(View view) {
