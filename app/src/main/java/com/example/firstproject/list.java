@@ -1,5 +1,6 @@
 package com.example.firstproject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -53,11 +54,18 @@ public class list extends AppCompatActivity {
         rv.addItemDecoration(divider);
 
         adapter = new MyAdapter(getItems(), this);
+
         rv.setAdapter(adapter);
 
         ItemTouchHelper itemTouchHelper = new
                 ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(rv);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.updateData(getItems());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -81,12 +89,6 @@ public class list extends AppCompatActivity {
 
     }
 
-    public void deleteItem(int position){
-        adapter.deleteItem(cos);
-        List<ListItem> il = productDAO.getAll();
-        il.remove(position);
-        adapter.updateData(il);
-    }
 
     public void addItem(View view) {
         Intent in = getIntent();

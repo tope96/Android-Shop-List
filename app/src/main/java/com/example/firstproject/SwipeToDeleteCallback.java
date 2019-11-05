@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -27,7 +28,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private ProductDAO productDAO;
 
     public SwipeToDeleteCallback(MyAdapter adapter) {
-        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.RIGHT);
+
         mAdapter = adapter;
         icon = ContextCompat.getDrawable(mAdapter.getContext(),
                 R.drawable.ic_clear_black_24dp);
@@ -46,9 +48,13 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build()
                 .getContactDAO();
+
         List<ListItem> il = productDAO.getAll();
-        productDAO.delete(il.get(position));
-        mAdapter.deleteItem(position);
+
+            productDAO.delete(il.get(position));
+            mAdapter.deleteItem(position);
+
+
     }
 
     @Override
@@ -76,5 +82,8 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
         background.draw(c);
         icon.draw(c);
+    }
+
+    public void bleh() {
     }
 }

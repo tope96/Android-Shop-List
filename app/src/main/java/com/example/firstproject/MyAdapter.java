@@ -1,6 +1,7 @@
 package com.example.firstproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import java.util.List;
+
+import static com.example.firstproject.list.adapter;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
@@ -93,7 +96,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(MyAdapter.this.context, "selected " + name.getText(), Toast.LENGTH_LONG);
+            Intent intent = new Intent(context, EditItemActivity.class);
+            intent.putExtra("itemPosition", getAdapterPosition());
+            context.startActivity(intent);
         }
+
+
     }
 }
