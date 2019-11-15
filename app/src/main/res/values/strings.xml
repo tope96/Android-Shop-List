@@ -8,4 +8,6 @@
     <string name="colorText">Ciemny motyw:</string>
     <string name="saveText">Zapisz</string>
     <string name="saveSuccess">Zapisano!</string>
+    <string name="productExists">Taki produkt już istnieje. Wybierz inną nazwę.</string>
+    <string name="productEmpty">Nie możesz dodać pustego produktu.</string>
 </resources>

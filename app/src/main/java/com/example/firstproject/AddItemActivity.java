@@ -3,6 +3,7 @@ package com.example.firstproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
@@ -27,9 +28,9 @@ public class AddItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         productDAO = Room.databaseBuilder(this, AppDatabase.class, "product")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .allowMainThreadQueries()
                 .build()
-                .getContactDAO();
+                .getProductDAO();
 
         setContentView(R.layout.activity_add_item);
 
@@ -49,25 +50,39 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
     public void saveNewItem(View view) {
-        String name = productName.getText().toString();
-        int pcount = Integer.parseInt(count.getText().toString());
-        int pprice = Integer.parseInt(price.getText().toString());
-        boolean pbought = false;
 
-        if(bought.isChecked()){
-            pbought = true;
-        }else{
-            pbought = false;
+        String productNameText = productName.getText().toString();
+        String countText = count.getText().toString();
+        String priceText = price.getText().toString();
+
+
+        if(productNameText.matches("") || countText.matches("") || priceText.matches("")){
+            Toast.makeText(this, R.string.productEmpty, Toast.LENGTH_LONG).show();
+            return;
         }
 
-        ListItem product = new ListItem(name, pprice, pcount, pbought);
+
+        Intent intent = new Intent();
+        intent.setAction("com.example.firstproject");
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(
+                new ComponentName("com.example.listener","com.example.listener.MainActivity"));
+        sendBroadcast(intent);
+
+        String name = productNameText;
+        int pcount = Integer.parseInt(countText);
+        int pprice = Integer.parseInt(priceText);
+
+
+
+        ListItem product = new ListItem(name, pprice, pcount, bought.isChecked());
 
         try {
             productDAO.insertAll(product);
             setResult(RESULT_OK);
             finish();
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(this, "Taki produkt już istnieje. Wybierz inną nazwę.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.productExists, Toast.LENGTH_SHORT).show();
         }
     }
 }

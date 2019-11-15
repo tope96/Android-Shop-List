@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvFontSize;
     private SharedPreferences preferences;
-    private RecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

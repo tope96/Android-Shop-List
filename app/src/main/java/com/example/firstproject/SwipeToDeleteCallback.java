@@ -32,7 +32,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
         mAdapter = adapter;
         icon = ContextCompat.getDrawable(mAdapter.getContext(),
-                R.drawable.ic_clear_black_24dp);
+                R.drawable.ic_delete_forever_black_24dp);
         background = new ColorDrawable(Color.RED);
     }
 
@@ -45,9 +45,9 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
         productDAO = Room.databaseBuilder(adapter.getContext(), AppDatabase.class, "product")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .allowMainThreadQueries()
                 .build()
-                .getContactDAO();
+                .getProductDAO();
 
         List<ListItem> il = productDAO.getAll();
 
@@ -78,12 +78,11 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
         } else { // view is unSwiped
             background.setBounds(0, 0, 0, 0);
+            icon.setBounds(0, 0, 0, 0);
         }
 
         background.draw(c);
         icon.draw(c);
     }
 
-    public void bleh() {
-    }
 }

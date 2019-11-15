@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class list extends AppCompatActivity {
-    public static final int RC_CREATE_CONTACT = 1;
+    public static final int RC_CREATE_PRODUCT = 1;
     private RecyclerView rv;
     private FloatingActionButton fab;
     private SharedPreferences preferences;
@@ -40,9 +40,9 @@ public class list extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         productDAO = Room.databaseBuilder(this, AppDatabase.class, "product")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .allowMainThreadQueries()
                 .build()
-                .getContactDAO();
+                .getProductDAO();
 
         rv = findViewById(R.id.rvItems);
         fab = findViewById(R.id.fabAddItem);
@@ -70,7 +70,7 @@ public class list extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREATE_CONTACT && resultCode == RESULT_OK) {
+        if (requestCode == RC_CREATE_PRODUCT && resultCode == RESULT_OK) {
             adapter.updateData(getItems());
         }
     }
@@ -95,6 +95,6 @@ public class list extends AppCompatActivity {
         Boolean str = in.getBooleanExtra("darkMode", false);
         Intent addItem = new Intent(this, AddItemActivity.class);
         addItem.putExtra("darkMode", str);
-        startActivityForResult(addItem, RC_CREATE_CONTACT);
+        startActivityForResult(addItem, RC_CREATE_PRODUCT);
     }
 }

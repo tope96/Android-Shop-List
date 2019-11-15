@@ -6,5 +6,5 @@ import androidx.room.TypeConverters;
 
 @Database(entities = {ListItem.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract ProductDAO getContactDAO();
+    public abstract ProductDAO getProductDAO();
 }

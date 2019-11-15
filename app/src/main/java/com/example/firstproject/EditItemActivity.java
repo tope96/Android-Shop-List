@@ -41,7 +41,7 @@ public class EditItemActivity extends AppCompatActivity {
         productDAO = Room.databaseBuilder(this, AppDatabase.class, "product")
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build()
-                .getContactDAO();
+                .getProductDAO();
 
         int itemPosition = in.getIntExtra("itemPosition", 1);
 
@@ -83,29 +83,28 @@ public class EditItemActivity extends AppCompatActivity {
 
     }
 
-    private List<ListItem> getItems(){
-        List<ListItem> il = productDAO.getAll();
-        return il;
-    }
 
     public void saveEditedItem(View view) {
-        String pName = name.getText().toString();
-        int pCount = Integer.parseInt(count.getText().toString());
-        int pPrice = Integer.parseInt(price.getText().toString());
-        boolean pBought = false;
+        String productNameText = name.getText().toString();
+        String countText = count.getText().toString();
+        String priceText = price.getText().toString();
 
-        if(bought.isChecked()){
-            pBought = true;
-        }else{
-            pBought = false;
+        if(productNameText.matches("") || countText.matches("") || priceText.matches("")){
+            Toast.makeText(this, R.string.productEmpty, Toast.LENGTH_LONG).show();
+            return;
         }
 
+        String pName = productNameText;
+        int pCount = Integer.parseInt(countText);
+        int pPrice = Integer.parseInt(priceText);
+
+
         try {
-            productDAO.updateRow(pName, pPrice, pCount, pBought, names);
+            productDAO.updateRow(pName, pPrice, pCount, bought.isChecked(), names);
             setResult(RESULT_OK);
             finish();
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(this, "Taki produkt już istnieje. Wybierz inną nazwę.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.productExists, Toast.LENGTH_SHORT).show();
         }
     }
 }
