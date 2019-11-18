@@ -18,7 +18,11 @@
         <activity android:name=".EditItemActivity" />
         <activity android:name=".AddItemActivity" />
         <activity android:name=".options" />
-        <activity android:name=".list" />
+        <activity android:name=".list"
+            android:label="@string/app_name"
+            android:exported="true">
+
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

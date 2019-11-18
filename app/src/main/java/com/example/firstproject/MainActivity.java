@@ -1,5 +1,6 @@
 package com.example.firstproject;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
         tvFontSize.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+    }
 
     public void listShow(View view) {
         boolean darkMode = preferences.getBoolean("darkTheme", true);

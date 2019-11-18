@@ -62,12 +62,7 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
 
-        Intent intent = new Intent();
-        intent.setAction("com.example.firstproject");
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.setComponent(
-                new ComponentName("com.example.listener","com.example.listener.MainActivity"));
-        sendBroadcast(intent);
+
 
         String name = productNameText;
         int pcount = Integer.parseInt(countText);
@@ -76,6 +71,16 @@ public class AddItemActivity extends AppCompatActivity {
 
 
         ListItem product = new ListItem(name, pprice, pcount, bought.isChecked());
+
+        Intent intent = new Intent();
+        intent.setAction("com.example.firstproject");
+        intent.putExtra("product", name);
+        intent.putExtra("price", pprice);
+        intent.putExtra("count", pcount);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.setComponent(
+                new ComponentName("com.example.listener","com.example.listener.MainActivity$MyBroadcastReceiver"));
+        sendBroadcast(intent);
 
         try {
             productDAO.insertAll(product);
