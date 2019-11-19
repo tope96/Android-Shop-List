@@ -76,8 +76,8 @@ public class list extends AppCompatActivity {
     }
 
     private List<ListItem> getItems(){
-        List<ListItem> il = productDAO.getAll();
-        return il;
+        List<ListItem> list = productDAO.getAll();
+        return list;
     }
 
     private void changeTheme(boolean dark){
