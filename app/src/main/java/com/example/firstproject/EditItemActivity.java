@@ -24,7 +24,7 @@ public class EditItemActivity extends AppCompatActivity {
 
     private EditText name, price, count;
     private CheckBox bought;
-    private ProductDAO productDAO;
+    //private ProductDAO productDAO;
     private String names;
 
     @Override
@@ -38,10 +38,6 @@ public class EditItemActivity extends AppCompatActivity {
 
         Intent in = getIntent();
 
-        productDAO = Room.databaseBuilder(this, AppDatabase.class, "product")
-                .allowMainThreadQueries()   //Allows room to do operation on main thread
-                .build()
-                .getProductDAO();
 
         int itemPosition = in.getIntExtra("itemPosition", 1);
 
@@ -52,12 +48,12 @@ public class EditItemActivity extends AppCompatActivity {
         count = findViewById(R.id.etEditCount);
         bought = findViewById(R.id.cbEditBought);
 
-        name.setText(productDAO.select(getItem(itemPosition)).getName());
-        price.setText(productDAO.select(getItem(itemPosition)).getPrice()+"");
-        count.setText(productDAO.select(getItem(itemPosition)).getCount()+"");
-        bought.setChecked(productDAO.select(getItem(itemPosition)).isBought());
+       // name.setText(productDAO.select(getItem(itemPosition)).getName());
+        //price.setText(productDAO.select(getItem(itemPosition)).getPrice()+"");
+        //count.setText(productDAO.select(getItem(itemPosition)).getCount()+"");
+        //bought.setChecked(productDAO.select(getItem(itemPosition)).isBought());
 
-        names = productDAO.select(getItem(itemPosition)).getName();
+        //names = productDAO.select(getItem(itemPosition)).getName();
 
     }
 
@@ -68,11 +64,11 @@ public class EditItemActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    private String getItem(int position){
-        List<ListItem> il = productDAO.getAll();
+   // private String getItem(int position){
+     //   List<ListItem> il = productDAO.getAll();
 
-        return il.get(position).getName();
-    }
+        //return il.get(position).getName();
+    //}
 
     private void changeTheme(boolean dark){
         if(dark){
@@ -100,7 +96,7 @@ public class EditItemActivity extends AppCompatActivity {
 
 
         try {
-            productDAO.updateRow(pName, pPrice, pCount, bought.isChecked(), names);
+           // productDAO.updateRow(pName, pPrice, pCount, bought.isChecked(), names);
             setResult(RESULT_OK);
             finish();
         } catch (SQLiteConstraintException e) {

@@ -17,7 +17,6 @@ public class AddItemActivity extends AppCompatActivity {
 
     private EditText productName, price, count;
     private CheckBox bought;
-    private ProductDAO productDAO;
 
 
     @Override
@@ -26,12 +25,6 @@ public class AddItemActivity extends AppCompatActivity {
         Boolean str = in.getBooleanExtra("darkMode", false);
         changeTheme(str);
         super.onCreate(savedInstanceState);
-
-        productDAO = Room.databaseBuilder(this, AppDatabase.class, "product")
-                .allowMainThreadQueries()
-                .build()
-                .getProductDAO();
-
         setContentView(R.layout.activity_add_item);
 
         productName = findViewById(R.id.etAddName);
@@ -83,7 +76,6 @@ public class AddItemActivity extends AppCompatActivity {
         sendBroadcast(intent);
 
         try {
-            productDAO.insertAll(product);
             setResult(RESULT_OK);
             finish();
         } catch (SQLiteConstraintException e) {

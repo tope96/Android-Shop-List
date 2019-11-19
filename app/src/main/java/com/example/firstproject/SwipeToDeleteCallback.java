@@ -25,7 +25,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private MyAdapter mAdapter;
     private Drawable icon;
     private final ColorDrawable background;
-    private ProductDAO productDAO;
+    //private ProductDAO productDAO;
 
     public SwipeToDeleteCallback(MyAdapter adapter) {
         super(0, ItemTouchHelper.RIGHT);
@@ -44,14 +44,11 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        productDAO = Room.databaseBuilder(adapter.getContext(), AppDatabase.class, "product")
-                .allowMainThreadQueries()
-                .build()
-                .getProductDAO();
 
-        List<ListItem> il = productDAO.getAll();
 
-            productDAO.delete(il.get(position));
+       // List<ListItem> il = productDAO.getAll();
+
+         //   productDAO.delete(il.get(position));
             mAdapter.deleteItem(position);
 
 

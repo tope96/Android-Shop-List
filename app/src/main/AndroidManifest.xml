@@ -9,11 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <provider
-            android:name=".MyContentProvider"
-            android:authorities="com.example.myprovider"
-            android:enabled="true"
-            android:exported="true"></provider>
 
         <activity android:name=".EditItemActivity" />
         <activity android:name=".AddItemActivity" />
