@@ -12,6 +12,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.List;
 
@@ -22,7 +26,8 @@ public class list extends AppCompatActivity {
     private SharedPreferences preferences;
     //private ProductDAO productDAO;
     public static  MyAdapter adapter;
-    public static int cos;
+    private static FirebaseFirestore mDatabase;
+    private Query query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,20 +47,13 @@ public class list extends AppCompatActivity {
         DividerItemDecoration divider = new DividerItemDecoration(rv.getContext(), rlm.getOrientation());
         rv.addItemDecoration(divider);
 
-        //adapter = new MyAdapter(getItems(), this);
 
-        rv.setAdapter(adapter);
-
-
-       // ItemTouchHelper itemTouchHelper = new
-        //        ItemTouchHelper(new SwipeToDeleteCallback(adapter));
-        //itemTouchHelper.attachToRecyclerView(rv);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //adapter.updateData(getItems());
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -65,9 +63,6 @@ public class list extends AppCompatActivity {
         }
     }
 
-    //private List<ListItem> getItems(){
-
-    //}
 
     private void changeTheme(boolean dark){
         if(dark){
