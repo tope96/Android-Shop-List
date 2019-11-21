@@ -10,4 +10,7 @@
     <string name="saveSuccess">Zapisano!</string>
     <string name="productExists">Taki produkt już istnieje. Wybierz inną nazwę.</string>
     <string name="productEmpty">Nie możesz dodać pustego produktu.</string>
+    <string name="textRequire">Wymagane!</string>
+    <string name="SignUpFailed">Nie udało się utworzyć konta</string>
+    <string name="LogInFailed">Nie udało się zalogować</string>
 </resources>
