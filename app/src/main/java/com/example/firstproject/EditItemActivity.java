@@ -1,8 +1,6 @@
 package com.example.firstproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,21 +9,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
-
-import static com.example.firstproject.list.adapter;
 
 public class EditItemActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
-
+    private ProgressBar progressBar;
     private EditText name, price, count;
     private CheckBox bought;
-    //private ProductDAO productDAO;
-    private String names;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +35,16 @@ public class EditItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
-        Intent in = getIntent();
-
-
-        int itemPosition = in.getIntExtra("itemPosition", 1);
-
-
-
         name = findViewById(R.id.etEditName);
         price = findViewById(R.id.etEditPrice);
         count = findViewById(R.id.etEditCount);
         bought = findViewById(R.id.cbEditBought);
+        progressBar = findViewById(R.id.pbEdit);
 
-       // name.setText(productDAO.select(getItem(itemPosition)).getName());
-        //price.setText(productDAO.select(getItem(itemPosition)).getPrice()+"");
-        //count.setText(productDAO.select(getItem(itemPosition)).getCount()+"");
-        //bought.setChecked(productDAO.select(getItem(itemPosition)).isBought());
+        Intent in = getIntent();
+        documentId = in.getStringExtra("docId");
 
-        //names = productDAO.select(getItem(itemPosition)).getName();
+        loadData(documentId);
 
     }
 
@@ -64,11 +55,21 @@ public class EditItemActivity extends AppCompatActivity {
         super.onStart();
     }
 
-   // private String getItem(int position){
-     //   List<ListItem> il = productDAO.getAll();
-
-        //return il.get(position).getName();
-    //}
+    private void loadData(String docId){
+        showProgress();
+        DocumentReference docRef = db.collection("products").document(docId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ListItem product = documentSnapshot.toObject(ListItem.class);
+                name.setText(product.getName());
+                count.setText(product.getCount()+"");
+                price.setText(product.getPrice()+"");
+                bought.setChecked(product.isBought());
+                hideProgress();
+            }
+        });
+    }
 
     private void changeTheme(boolean dark){
         if(dark){
@@ -94,13 +95,25 @@ public class EditItemActivity extends AppCompatActivity {
         int pCount = Integer.parseInt(countText);
         int pPrice = Integer.parseInt(priceText);
 
+        DocumentReference documentReference = db.collection("products").document(documentId);
 
         try {
-           // productDAO.updateRow(pName, pPrice, pCount, bought.isChecked(), names);
+            documentReference.update("name", pName,
+                    "count", pCount,
+                    "price", pPrice,
+                    "bought", bought.isChecked());
             setResult(RESULT_OK);
             finish();
         } catch (SQLiteConstraintException e) {
             Toast.makeText(this, R.string.productExists, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void showProgress(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgress(){
+        progressBar.setVisibility(View.GONE);
     }
 }

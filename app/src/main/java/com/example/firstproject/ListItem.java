@@ -13,24 +13,27 @@ public class ListItem {
     private int count;
     private boolean bought;
     private String name;
-    public static final String COLUMN_ID = BaseColumns._ID;
+    private String uid;
 
 
 
-    public ListItem(String name, int price, int count, boolean bought) {
+    public ListItem(String name, int price, int count, boolean bought, String uid) {
         this.name = name;
         this.price = price;
         this.count = count;
         this.bought = bought;
+        this.uid = uid;
     }
 
+    public ListItem(){
 
+    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(@NonNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -58,4 +61,11 @@ public class ListItem {
         this.bought = bought;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }

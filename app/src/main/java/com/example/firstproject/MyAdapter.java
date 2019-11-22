@@ -17,31 +17,42 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
 import java.util.List;
 
-import static com.example.firstproject.list.adapter;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MyAdapter extends FirestoreRecyclerAdapter<ListItem, MyAdapter.ViewHolder> {
 
-    private List<ListItem> list;
+    private FirestoreRecyclerOptions<ListItem> list;
     private Context context;
 
-    public MyAdapter(List<ListItem> lil, Context ctx){
-        list = lil;
-        context = ctx;
+    /**
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
+     *
+     * @param options
+     */
+    public MyAdapter(@NonNull FirestoreRecyclerOptions<ListItem> options) {
+        super(options);
+        list = options;
     }
+
 
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_list_item, parent, false);
 
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
+
     @Override
-    public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
-        ListItem li = list.get(position);
+    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ListItem model) {
+        ListItem li = list.getSnapshots().get(position);
 
         holder.name.setText(li.getName());
         holder.price.setText("cena: " + li.getPrice() + " zł");
@@ -54,25 +65,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    void updateData(List<ListItem> contacts) {
-        this.list = contacts;
-        notifyDataSetChanged();
-    }
-
 
     public Context getContext() {
         return context;
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
 
-    public void deleteItem(int position) {
-        this.list.remove(position);
-        notifyDataSetChanged();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
