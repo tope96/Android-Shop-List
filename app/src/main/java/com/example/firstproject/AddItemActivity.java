@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
@@ -17,11 +18,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText productName, price, count;
     private CheckBox bought;
     private FirebaseFirestore db;
-
+    Timestamp timestamp = new Timestamp(Timestamp.now().toDate());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +59,20 @@ public class AddItemActivity extends AppCompatActivity {
 
     }
 
-    private void saveToDb(String productName, int productCount, int productPrice, boolean bought){
+    private void addProductToDb(ListItem product){
 
+        db.collection("products")
+                .add(product)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
     }
 
     public void saveNewItem(View view) {
@@ -66,34 +81,17 @@ public class AddItemActivity extends AppCompatActivity {
         String priceText = price.getText().toString();
 
 
-        if(productNameText.matches("") || countText.matches("") || priceText.matches("")){
-            Toast.makeText(this, R.string.productEmpty, Toast.LENGTH_LONG).show();
+        if (!validateForm(productNameText, countText, priceText)) {
             return;
         }
-
 
         String name = productNameText;
         int pcount = Integer.parseInt(countText);
         int pprice = Integer.parseInt(priceText);
 
+        ListItem product = new ListItem(name, pprice, pcount, bought.isChecked(), FirebaseAuth.getInstance().getCurrentUser().getUid(), timestamp);
 
-
-        ListItem product = new ListItem(name, pprice, pcount, bought.isChecked(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        db.collection("products")
-                .add(product)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("TOMEK", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("TOMEK", "Error adding document", e);
-                    }
-                });
+        addProductToDb(product);
 
         Intent intent = new Intent();
         intent.setAction("com.example.firstproject");
@@ -105,13 +103,34 @@ public class AddItemActivity extends AppCompatActivity {
                 new ComponentName("com.example.listener","com.example.listener.MainActivity$MyBroadcastReceiver"));
         sendBroadcast(intent);
 
-
-        try {
-            setResult(RESULT_OK);
-            finish();
-        } catch (SQLiteConstraintException e) {
-            Toast.makeText(this, R.string.productExists, Toast.LENGTH_SHORT).show();
-        }
+        finish();
     }
+
+    private boolean validateForm(String name, String count, String price) {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(name)) {
+            productName.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            productName.setError(null);
+        }
+
+        if (TextUtils.isEmpty(count)) {
+            this.count.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.count.setError(null);
+        }
+
+        if (TextUtils.isEmpty(price)) {
+            this.price.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.price.setError(null);
+        }
+
+    return valid;
+    };
 }
 

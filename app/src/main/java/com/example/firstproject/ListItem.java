@@ -7,6 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
 
 public class ListItem {
     private int price;
@@ -14,15 +18,17 @@ public class ListItem {
     private boolean bought;
     private String name;
     private String uid;
+    private Timestamp timestamp;
 
 
 
-    public ListItem(String name, int price, int count, boolean bought, String uid) {
+    public ListItem(String name, int price, int count, boolean bought, String uid, Timestamp timestamp) {
         this.name = name;
         this.price = price;
         this.count = count;
         this.bought = bought;
         this.uid = uid;
+        this.timestamp = timestamp;
     }
 
     public ListItem(){
@@ -68,4 +74,13 @@ public class ListItem {
     public void setUid(String uid) {
         this.uid = uid;
     }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
 }

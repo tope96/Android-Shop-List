@@ -37,11 +37,10 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<ListItem, Recycler
     @Override
     protected void onBindViewHolder(@NonNull ListHolder holder, int position, @NonNull ListItem model) {
         holder.name.setText(model.getName());
-        holder.count.setText(model.getCount()+"");
-        holder.price.setText(model.getPrice()+"");
+        holder.count.setText("ilość: " + model.getCount()+"");
+        holder.price.setText("cena: " + model.getPrice()+" zł");
         holder.bought.setChecked(model.isBought());
     }
-
 
     @NonNull
     @Override
@@ -68,7 +67,6 @@ public class RecyclerAdapter extends FirestoreRecyclerAdapter<ListItem, Recycler
         @Override
         public void onClick(View v) {
             String documentId = getSnapshots().getSnapshot(getAdapterPosition()).getId();
-            Log.d("TOMEK", "onClick: tutaj" + documentId);
             Intent intent = new Intent(context, EditItemActivity.class);
             intent.putExtra("docId", documentId);
             context.startActivity(intent);

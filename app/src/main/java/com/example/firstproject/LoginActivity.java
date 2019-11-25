@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText etEmail, etPass;
-    private Button btLogin;
+    private Button btLogin, btSignup;
     private ProgressBar progressBar;
     private SharedPreferences preferences;
 
@@ -37,11 +37,15 @@ public class LoginActivity extends AppCompatActivity {
         changeTheme(darkMode);
 
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_login);
 
         etEmail = findViewById(R.id.etEmail);
         etPass = findViewById(R.id.etPass);
         btLogin = findViewById(R.id.btLogin);
+        btSignup = findViewById(R.id.btRegister);
         progressBar = findViewById(R.id.progressBar);
 
         mAuth = FirebaseAuth.getInstance();
@@ -65,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d("TOMEK", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -146,10 +149,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void showProgress(){
+        etEmail.setEnabled(false);
+        etPass.setEnabled(false);
+        btLogin.setEnabled(false);
+        btSignup.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     public void hideProgress(){
+        if(btSignup.isEnabled()==false) btSignup.setEnabled(true);
+        if(btLogin.isEnabled()==false) btLogin.setEnabled(true);
+        if(etEmail.isEnabled()==false) etEmail.setEnabled(true);
+        if(etPass.isEnabled()==false) etPass.setEnabled(true);
         progressBar.setVisibility(View.GONE);
     }
 

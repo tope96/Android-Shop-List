@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-
-
         setContentView(R.layout.activity_main);
         tvFontSize = findViewById(R.id.tvTest);
 
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     public void listShow(View view) {
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             setTheme(R.style.AppTheme);
         }
-
     }
 
 

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,12 +35,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import java.util.List;
 
 public class list extends AppCompatActivity {
-    public static final int RC_CREATE_PRODUCT = 1;
     private FloatingActionButton fab;
-    private SharedPreferences preferences;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference productColl = db.collection("products");
     private RecyclerAdapter adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +52,9 @@ public class list extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         fab = findViewById(R.id.fabAddItem);
+        progressBar = findViewById(R.id.pbList);
 
         setUpRecyclerView();
-
 
     }
 
@@ -70,34 +70,24 @@ public class list extends AppCompatActivity {
         adapter.stopListening();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREATE_PRODUCT && resultCode == RESULT_OK) {
-            //adapter.updateData(getItems());
-        }
-    }
-
-
     private void changeTheme(boolean dark){
         if(dark){
             setTheme(R.style.AppTheme2);
         }else{
             setTheme(R.style.AppTheme);
         }
-
     }
-
 
     public void addItem(View view) {
         Intent in = getIntent();
         Boolean str = in.getBooleanExtra("darkMode", false);
         Intent addItem = new Intent(this, AddItemActivity.class);
         addItem.putExtra("darkMode", str);
-        startActivityForResult(addItem, RC_CREATE_PRODUCT);
+        startActivity(addItem);
     }
 
     private void setUpRecyclerView(){
-        Query query = productColl.orderBy("name", Query.Direction.DESCENDING).whereEqualTo("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query = productColl.orderBy("timestamp", Query.Direction.ASCENDING).whereEqualTo("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         FirestoreRecyclerOptions<ListItem> options = new FirestoreRecyclerOptions.Builder<ListItem>()
                 .setQuery(query, ListItem.class)
@@ -110,7 +100,6 @@ public class list extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             private Drawable icon;
             private final ColorDrawable background =  new ColorDrawable(Color.RED);
@@ -120,10 +109,9 @@ public class list extends AppCompatActivity {
                 return false;
             }
 
-
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                showProgress();
                 String documentId = adapter.getDocId(viewHolder.getAdapterPosition());
                 db.collection("products")
                         .document(documentId)
@@ -131,17 +119,15 @@ public class list extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Log.d("TOMEK", "onSuccess: Removed list item");
+                                adapter.notifyDataSetChanged();
+                                hideProgress();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.d("TOMEK", "onFailure: " + e.getLocalizedMessage());
                             }
                         });
-                adapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -177,6 +163,13 @@ public class list extends AppCompatActivity {
 
         }).attachToRecyclerView(recyclerView);
 
+    }
 
+    public void showProgress(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgress(){
+        progressBar.setVisibility(View.GONE);
     }
 }

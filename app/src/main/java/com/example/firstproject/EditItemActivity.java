@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -80,14 +81,12 @@ public class EditItemActivity extends AppCompatActivity {
 
     }
 
-
     public void saveEditedItem(View view) {
         String productNameText = name.getText().toString();
         String countText = count.getText().toString();
         String priceText = price.getText().toString();
 
-        if(productNameText.matches("") || countText.matches("") || priceText.matches("")){
-            Toast.makeText(this, R.string.productEmpty, Toast.LENGTH_LONG).show();
+        if (!validateForm(productNameText, countText, priceText)) {
             return;
         }
 
@@ -97,16 +96,13 @@ public class EditItemActivity extends AppCompatActivity {
 
         DocumentReference documentReference = db.collection("products").document(documentId);
 
-        try {
-            documentReference.update("name", pName,
+        documentReference.update("name", pName,
                     "count", pCount,
                     "price", pPrice,
                     "bought", bought.isChecked());
             setResult(RESULT_OK);
-            finish();
-        } catch (SQLiteConstraintException e) {
-            Toast.makeText(this, R.string.productExists, Toast.LENGTH_SHORT).show();
-        }
+
+        finish();
     }
 
     public void showProgress(){
@@ -116,4 +112,31 @@ public class EditItemActivity extends AppCompatActivity {
     public void hideProgress(){
         progressBar.setVisibility(View.GONE);
     }
+
+    private boolean validateForm(String name, String count, String price) {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(name)) {
+            this.name.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.name.setError(null);
+        }
+
+        if (TextUtils.isEmpty(count)) {
+            this.count.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.count.setError(null);
+        }
+
+        if (TextUtils.isEmpty(price)) {
+            this.price.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.price.setError(null);
+        }
+
+        return valid;
+    };
 }
