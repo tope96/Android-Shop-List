@@ -89,4 +89,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void favsShow(View view) {
+        boolean darkMode = preferences.getBoolean("darkTheme", true);
+        Intent in = new Intent(this, FavouriteShopsListActivity.class);
+        in.putExtra("darkMode", darkMode);
+        startActivity(in);
+    }
 }

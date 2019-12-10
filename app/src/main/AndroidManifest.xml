@@ -14,6 +14,7 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".AddItemActivity" />
         <activity android:name=".options" />
+        <activity android:name=".FavouriteShopsListActivity" />
 
         <activity
             android:name=".list"
