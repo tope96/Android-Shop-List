@@ -1,5 +1,7 @@
 package com.example.firstproject;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,6 +25,7 @@ public class Frag_map extends Fragment {
 
     MapView mapView;
     private GoogleMap googleMap;
+    private static final int REQUEST_PERMISSION_LOCATION = 255;
 
     @Nullable
     @Override
@@ -30,6 +34,11 @@ public class Frag_map extends Fragment {
         //with the fragment you want to inflate
         //like if the class is HomeFragment it should have R.layout.home_fragment
         //if it is DashboardFragment it should have R.layout.fragment_dashboard
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_LOCATION);
+        } else {
+            // We have already permission to use the location
+        }
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) rootView.findViewById(R.id.mapView);
 
@@ -66,6 +75,16 @@ public class Frag_map extends Fragment {
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // We now have permission to use the location
+            }
+        }
     }
 
     @Override

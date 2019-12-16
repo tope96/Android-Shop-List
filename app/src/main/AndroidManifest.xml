@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.firstproject">
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +13,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBV8lYWAuUfHzK8XcyR3MUAI6nudjQQu3s"/>
+
         <activity android:name=".EditItemActivity" />
         <activity android:name=".LoginActivity"/>
         <activity android:name=".AddItemActivity" />
