@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         >
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBV8lYWAuUfHzK8XcyR3MUAI6nudjQQu3s"/>
         <activity android:name=".EditItemActivity" />
         <activity android:name=".LoginActivity"/>
         <activity android:name=".AddItemActivity" />

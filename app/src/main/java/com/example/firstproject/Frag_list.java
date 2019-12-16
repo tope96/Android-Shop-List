@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,15 +37,27 @@ public class Frag_list extends Fragment {
         //with the fragment you want to inflate
         //like if the class is HomeFragment it should have R.layout.home_fragment
         //if it is DashboardFragment it should have R.layout.fragment_dashboard
-
-        return inflater.inflate(R.layout.fragment_list, null);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        return rootView;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_list, null);
-        setUpRecyclerView(rootView);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpRecyclerView(view);
+        Log.d("COS", "onViewCreated: utworzono");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     private void setUpRecyclerView(View view){
@@ -72,7 +85,7 @@ public class Frag_list extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 String documentId = adapter.getDocId(viewHolder.getAdapterPosition());
-                db.collection("products")
+                db.collection("shops")
                         .document(documentId)
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -97,13 +110,13 @@ public class Frag_list extends Fragment {
                 View itemView = viewHolder.itemView;
                 int backgroundCornerOffset = 20;
 
-                int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-                int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                //int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                //int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
                // int iconBottom = iconTop + icon.getIntrinsicHeight();
 
                 if (dX > 0) { // Swiping to the right
-                    int iconLeft = itemView.getLeft() + iconMargin;
-                    int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
+                   // int iconLeft = itemView.getLeft() + iconMargin;
+                    //int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
                     //icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
                     background.setBounds(itemView.getLeft(), itemView.getTop(),

@@ -60,7 +60,6 @@ public class FavouriteShopsListActivity extends AppCompatActivity implements Bot
     }
 
 
-
     private boolean loadFragment(Fragment fragment){
         if(fragment != null){
             getSupportFragmentManager()

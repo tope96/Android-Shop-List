@@ -43,7 +43,7 @@ public class RecyclerAdapterShops extends FirestoreRecyclerAdapter<Shop, Recycle
     @NonNull
     @Override
     public ListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_shop, parent, false);
         return new ListHolder(v);
     }
 
