@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -18,11 +19,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,6 +46,7 @@ public class FavouriteShopsListActivity extends AppCompatActivity implements Bot
     private RecyclerAdapterShops adapter;
     private ActionBar toolbar;
     private static final int REQUEST_PERMISSION_LOCATION = 255;
+    private PendingIntent geofencePendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +104,7 @@ public class FavouriteShopsListActivity extends AppCompatActivity implements Bot
 
             case R.id.shopMap:
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_LOCATION);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_LOCATION);
                 } else {
                     fragment = new Frag_map();
                 }
@@ -124,4 +133,5 @@ public class FavouriteShopsListActivity extends AppCompatActivity implements Bot
         addShop.putExtra("darkMode", str);
         startActivity(addShop);
     }
+
 }

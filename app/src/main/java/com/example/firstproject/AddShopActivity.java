@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -42,6 +46,10 @@ public class AddShopActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private Location loc;
     private FirebaseFirestore db;
+    private GeofencingClient gc;
+    private PendingIntent geofencePendintIntent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,8 @@ public class AddShopActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_shop);
         db = FirebaseFirestore.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+
+        gc = LocationServices.getGeofencingClient(this);
 
         shopName = findViewById(R.id.etShopName);
         shopDesc = findViewById(R.id.etShopDesc);
@@ -100,27 +110,6 @@ public class AddShopActivity extends AppCompatActivity {
         }
     };
 
-    private void getLastLocation(){
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if(location != null){
-                            loc = location;
-                        }
-                    }
-                });
-
-            } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        } else {
-            requestPermissions();
-        }
-    }
 
     private void changeTheme(boolean dark){
         if(dark){
@@ -130,6 +119,7 @@ public class AddShopActivity extends AppCompatActivity {
         }
 
     }
+
 
     public void saveShop(View view) {
         final String name = shopName.getText().toString();
@@ -144,6 +134,14 @@ public class AddShopActivity extends AppCompatActivity {
                         if(location != null){
                             Shop newShop = new Shop(name, desc, radius, location.getLongitude(), location.getLatitude(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                             addShopToDb(newShop);
+
+                            Geofence geo = new Geofence.Builder().setRequestId(name)
+                                    .setCircularRegion(location.getLatitude(), location.getLongitude(), radius)
+                                    .setExpirationDuration(1000*60*60)
+                                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                                    .build();
+
+                            gc.addGeofences(getGeofencingRequest(geo),getGeofencePendingIntent());
                         }
                     }
                 });
@@ -163,6 +161,23 @@ finish();
 
     }
 
+    private GeofencingRequest getGeofencingRequest(Geofence geo) {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofence(geo);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        if (geofencePendintIntent != null) {
+            return geofencePendintIntent;
+        }
+        Intent intent = new Intent(this, GeofenceBroadcast.class);
+
+        geofencePendintIntent = PendingIntent
+                .getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return geofencePendintIntent;
+    }
 
     private void addShopToDb(Shop shop){
 
