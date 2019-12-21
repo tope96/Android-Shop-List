@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -114,5 +115,13 @@ public class FavouriteShopsListActivity extends AppCompatActivity implements Bot
                 loadFragment(fragment);
             }
         }
+    }
+
+    public void addShop(View view) {
+        Intent in = getIntent();
+        Boolean str = in.getBooleanExtra("darkMode", false);
+        Intent addShop = new Intent(this, AddShopActivity.class);
+        addShop.putExtra("darkMode", str);
+        startActivity(addShop);
     }
 }

@@ -19,35 +19,52 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SnapshotMetadata;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Frag_map extends Fragment {
 
     MapView mapView;
     private GoogleMap googleMap;
     private static final int REQUEST_PERMISSION_LOCATION = 255;
+    Marker marker;
+    List<Shop> shopList;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //just change the fragment_dashboard
-        //with the fragment you want to inflate
-        //like if the class is HomeFragment it should have R.layout.home_fragment
-        //if it is DashboardFragment it should have R.layout.fragment_dashboard
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_LOCATION);
         } else {
             // We have already permission to use the location
         }
+
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) rootView.findViewById(R.id.mapView);
 
         return rootView;
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        CollectionReference geoFirestoreRef = FirebaseFirestore.getInstance().collection("shops");
+
+        shopList = new ArrayList<>();
 
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
@@ -60,19 +77,35 @@ public class Frag_map extends Fragment {
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(GoogleMap mMap) {
+            public void onMapReady(final GoogleMap mMap) {
+
+                FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                CollectionReference shopsRef = rootRef.collection("shops");
+
                 googleMap = mMap;
 
                 // For showing a move to my location button
                 googleMap.setMyLocationEnabled(true);
 
+                shopsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                double lat = (double) document.get("latitude");
+                                double longi = (double) document.get("longitude");
+                                String title = document.getString("name");
+                                LatLng latLng = new LatLng(lat, longi);
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(title));
+                            }
+                        }
+                    }
+                });
+
                 // For dropping a marker at a point on the Map
                 LatLng sydney = new LatLng(-34, 151);
                 googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
     }
@@ -111,3 +144,4 @@ public class Frag_map extends Fragment {
         mapView.onLowMemory();
     }
 }
+

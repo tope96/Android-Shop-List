@@ -1,20 +1,45 @@
 package com.example.firstproject;
 
+import com.google.firebase.firestore.GeoPoint;
+
 public class Shop {
 
     private String name;
     private String desc;
     private int radius;
+    private double longitude;
+    private double latitude;
+    private String uid;
 
-    public Shop(String name, String desc, int radius) {
+    public Shop(String name, String desc, int radius, double longitude, double latitude, String uid) {
         this.name = name;
         this.desc = desc;
         this.radius = radius;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.uid = uid;
     }
 
     public Shop(){
 
     }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
 
     public String getName() {
         return name;
@@ -40,8 +65,12 @@ public class Shop {
         this.radius = radius;
     }
 
+    public String getUid() {
+        return uid;
+    }
 
-
-
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }
 

@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import org.w3c.dom.Text;
+
 public class RecyclerAdapterShops extends FirestoreRecyclerAdapter<Shop, RecyclerAdapterShops.ListHolder> {
 
     private Context context;
@@ -38,6 +40,8 @@ public class RecyclerAdapterShops extends FirestoreRecyclerAdapter<Shop, Recycle
         holder.name.setText(model.getName()+"");
         holder.desc.setText(model.getDesc()+"");
         holder.radius.setText(model.getRadius()+" m");
+        holder.latitude.setText("lat: " + model.getLatitude() + "");
+        holder.longitude.setText("long: " + model.getLongitude()+"");
     }
 
     @NonNull
@@ -51,12 +55,16 @@ public class RecyclerAdapterShops extends FirestoreRecyclerAdapter<Shop, Recycle
         public TextView name;
         public TextView desc;
         public TextView radius;
+        public TextView longitude;
+        public TextView latitude;
 
         public ListHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tvShop);
             desc = itemView.findViewById(R.id.tvDescShop);
             radius = itemView.findViewById(R.id.tvRadiusShop);
+            longitude = itemView.findViewById(R.id.tvLong);
+            latitude = itemView.findViewById(R.id.tvLati);
         }
 
         @Override
