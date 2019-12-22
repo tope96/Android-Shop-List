@@ -49,13 +49,10 @@ public class Frag_list extends Fragment {
         return rootView;
     }
 
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpRecyclerView(view);
-        Log.d("COS", "onViewCreated: utworzono");
     }
 
     @Override
@@ -84,7 +81,6 @@ public class Frag_list extends Fragment {
         recyclerView.setAdapter(adapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            private Drawable icon;
             private final ColorDrawable background =  new ColorDrawable(Color.RED);
 
             @Override
@@ -138,31 +134,19 @@ public class Frag_list extends Fragment {
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
-                // icon = getDrawable(R.drawable.ic_delete_forever_black_24dp);
-
                 View itemView = viewHolder.itemView;
                 int backgroundCornerOffset = 20;
 
-                //int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-                //int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-                // int iconBottom = iconTop + icon.getIntrinsicHeight();
-
-                if (dX > 0) { // Swiping to the right
-                    // int iconLeft = itemView.getLeft() + iconMargin;
-                    //int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
-                    //icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-
+                if (dX > 0) {
                     background.setBounds(itemView.getLeft(), itemView.getTop(),
                             itemView.getLeft() + ((int) dX) + backgroundCornerOffset, itemView.getBottom());
                 } else if (dX < 0) { // Swiping to the left
 
                 } else {
                     background.setBounds(0, 0, 0, 0);
-                    //icon.setBounds(0, 0, 0, 0);
                 }
 
                 background.draw(c);
-                //icon.draw(c);
             }
 
         }).attachToRecyclerView(recyclerView);

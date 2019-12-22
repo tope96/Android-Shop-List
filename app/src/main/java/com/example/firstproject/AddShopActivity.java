@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -47,15 +48,11 @@ public class AddShopActivity extends AppCompatActivity implements GoogleApiClien
     private EditText shopRad;
     private static final int PERMISSION_ID = 44;
     private FusedLocationProviderClient mFusedLocationClient;
-    private Location loc;
     private FirebaseFirestore db;
     private GeofencingClient gc;
-    private PendingIntent geofencePendintIntent;
-    private LocationRequest mLocationRequest;
     private static final long UPDATE_INTERVAL = 10 * 1000;
     private static final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL / 2;
     private static final long MAX_WAIT_TIME = UPDATE_INTERVAL * 3;
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +69,7 @@ public class AddShopActivity extends AppCompatActivity implements GoogleApiClien
         shopName = findViewById(R.id.etShopName);
         shopDesc = findViewById(R.id.etShopDesc);
         shopRad = findViewById(R.id.etShopRad);
-
     }
-
 
     private boolean checkPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -109,26 +104,20 @@ public class AddShopActivity extends AppCompatActivity implements GoogleApiClien
         }
     }
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            Log.d("TOMEK", "callback");
-        }
-    };
-
-
     private void changeTheme(boolean dark){
         if(dark){
             setTheme(R.style.AppTheme2);
         }else{
             setTheme(R.style.AppTheme);
         }
-
     }
 
-
     public void saveShop(View view) {
+
+        if (!validateForm(shopName.getText().toString(), shopDesc.getText().toString(), shopRad.getText().toString())) {
+            return;
+        }
+
         final String name = shopName.getText().toString();
         final String desc = shopDesc.getText().toString();
         final int radius = Integer.parseInt(shopRad.getText().toString());
@@ -154,7 +143,7 @@ public class AddShopActivity extends AppCompatActivity implements GoogleApiClien
                 });
 
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.turnOnLoc, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
@@ -162,9 +151,7 @@ public class AddShopActivity extends AppCompatActivity implements GoogleApiClien
             requestPermissions();
         }
 
-
-finish();
-
+    finish();
 
     }
 
@@ -199,17 +186,11 @@ finish();
     }
 
     private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
 
         mLocationRequest.setInterval(UPDATE_INTERVAL);
-
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // Sets the maximum time when batched location updates are delivered. Updates may be
-        // delivered sooner than this interval.
         mLocationRequest.setMaxWaitTime(MAX_WAIT_TIME);
     }
 
@@ -221,5 +202,32 @@ finish();
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private boolean validateForm(String name, String desc, String rad) {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(name)) {
+            shopName.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            shopName.setError(null);
+        }
+
+        if (TextUtils.isEmpty(desc)) {
+            this.shopDesc.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.shopDesc.setError(null);
+        }
+
+        if (TextUtils.isEmpty(rad)) {
+            this.shopRad.setError(getString(R.string.textRequire));
+            valid = false;
+        } else {
+            this.shopRad.setError(null);
+        }
+
+        return valid;
     }
 }

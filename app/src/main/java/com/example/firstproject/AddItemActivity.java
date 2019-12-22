@@ -131,6 +131,6 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
     return valid;
-    };
+    }
 }
 

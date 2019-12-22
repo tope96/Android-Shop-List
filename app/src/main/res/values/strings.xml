@@ -17,5 +17,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enteringShop">Wlasnie wszedłeś do sklepu:</string>
-    <string name="leavingShop">Uwaga! Wyszedleś ze sklepu:</string>
+    <string name="leavingShop">Uwaga! Wyszedłeś ze sklepu:</string>
+    <string name="shopName">Nazwa sklepu:</string>
+    <string name="shopNameHint">nazwa</string>
+    <string name="shopDesc">Opis sklepu:</string>
+    <string name="shopDescHint">opis</string>
+    <string name="shopRad">Dokładność:</string>
+    <string name="shopRadHint">promień</string>
+    <string name="shopRadUnit">m</string>
+    <string name="turnOnLoc">Musisz włączyć lokalizację.</string>
 </resources>
