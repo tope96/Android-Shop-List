@@ -19,8 +19,19 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GeofenceBroadcast extends BroadcastReceiver {
+
+    public enum products
+    {
+        kurczak,
+        cukier,
+        mleko,
+        soja
+    }
+    private Random rand;
     static final String ACTION_PROCESS_UPDATES =
             "com.example.firstproject.action" +
                     ".PROCESS_UPDATES";
@@ -40,19 +51,25 @@ public class GeofenceBroadcast extends BroadcastReceiver {
 
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            createNotification(context.getString(R.string.enteringShop) + " " + triggeredFences.get(0).getRequestId(), context);
+            createNotification(context.getString(R.string.enteringShop) + " " + triggeredFences.get(0).getRequestId(), true, context);
         }
         else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-            createNotification(context.getString(R.string.leavingShop) + " " + triggeredFences.get(0).getRequestId(), context);
+            createNotification(context.getString(R.string.leavingShop) + " " + triggeredFences.get(0).getRequestId(), false, context);
         } else {
 
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createNotification(String shopName, Context context){
+    private void createNotification(String shopName, boolean direction, Context context){
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String sale = "";
+
+        if(direction){
+            sale = "Dzisiaj na promocji: " + products.values()[ThreadLocalRandom.current().nextInt(1, 4)];
+        }
 
         String channelId = "some_channel_id";
         CharSequence channelName = "Some Channel";
@@ -66,6 +83,7 @@ public class GeofenceBroadcast extends BroadcastReceiver {
 
         Notification notification = new Notification.Builder(context)
                 .setContentTitle(shopName)
+                .setContentText(sale)
                 .setSmallIcon(R.drawable.ic_shopping_cart_black_24dp)
                 .setChannelId(channelId)
                 .setDefaults(Notification.DEFAULT_ALL)
