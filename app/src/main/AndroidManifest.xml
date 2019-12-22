@@ -13,10 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".GeofenceBroadcast"
-            android:exported="true"
-            android:enabled="true"></service>
+
 
         <activity android:name=".AddShopActivity" />
 
@@ -43,10 +40,8 @@
 
         <receiver
             android:name="com.example.firstproject.GeofenceBroadcast"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.example.firstproject.GeofenceBroadcast.ACTION_RECEIVE_GEOFENCE" />
-            </intent-filter>
+            android:exported="true"
+            android:enabled="true">
 
         </receiver>
     </application>

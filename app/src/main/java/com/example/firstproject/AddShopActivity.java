@@ -1,6 +1,7 @@
 package com.example.firstproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,9 +22,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,7 +40,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class AddShopActivity extends AppCompatActivity {
+public class AddShopActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks {
 
     private EditText shopName;
     private EditText shopDesc;
@@ -48,8 +51,11 @@ public class AddShopActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private GeofencingClient gc;
     private PendingIntent geofencePendintIntent;
-
-
+    private LocationRequest mLocationRequest;
+    private static final long UPDATE_INTERVAL = 10 * 1000;
+    private static final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL / 2;
+    private static final long MAX_WAIT_TIME = UPDATE_INTERVAL * 3;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class AddShopActivity extends AppCompatActivity {
         shopName = findViewById(R.id.etShopName);
         shopDesc = findViewById(R.id.etShopDesc);
         shopRad = findViewById(R.id.etShopRad);
+
     }
 
 
@@ -165,18 +172,14 @@ finish();
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         builder.addGeofence(geo);
+        createLocationRequest();
         return builder.build();
     }
 
     private PendingIntent getGeofencePendingIntent() {
-        if (geofencePendintIntent != null) {
-            return geofencePendintIntent;
-        }
         Intent intent = new Intent(this, GeofenceBroadcast.class);
-
-        geofencePendintIntent = PendingIntent
-                .getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return geofencePendintIntent;
+        intent.setAction(GeofenceBroadcast.ACTION_PROCESS_UPDATES);
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void addShopToDb(Shop shop){
@@ -193,5 +196,30 @@ finish();
                     public void onFailure(@NonNull Exception e) {
                     }
                 });
+    }
+
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        // Sets the maximum time when batched location updates are delivered. Updates may be
+        // delivered sooner than this interval.
+        mLocationRequest.setMaxWaitTime(MAX_WAIT_TIME);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }

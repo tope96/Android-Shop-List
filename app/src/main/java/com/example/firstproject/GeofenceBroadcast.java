@@ -2,72 +2,77 @@ package com.example.firstproject;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-public class GeofenceBroadcast extends IntentService {
+public class GeofenceBroadcast extends BroadcastReceiver {
+    static final String ACTION_PROCESS_UPDATES =
+            "com.example.firstproject.action" +
+                    ".PROCESS_UPDATES";
 
-    private static final String TAG = "GeofenceTransitions";
-
-
-    public GeofenceBroadcast() {
-        super("GeofenceBroadcast");
-    }
-
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    protected void onHandleIntent(Intent intent) {
-    Log.d("TOMEK", "OnHandle");
+    public void onReceive(Context context, Intent intent) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+
+        String channelId = "some_channel_id";
+        CharSequence channelName = "Some Channel";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+        notificationChannel.enableLights(true);
+        notificationChannel.setLightColor(Color.RED);
+        notificationChannel.enableVibration(true);
+        notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        notificationManager.createNotificationChannel(notificationChannel);
+
+
         if (geofencingEvent.hasError()) {
-            Log.e(TAG, "Goefencing Error " + geofencingEvent.getErrorCode());
+            Log.e("TOMEK", "Goefencing Error " + geofencingEvent.getErrorCode());
             return;
         }
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            Log.d("TOMEK", "wejscie");
-            showNotification("Entered", "Entered the Location");
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("Wejscie")
+                    .setSmallIcon(R.drawable.ic_add_white_24dp)
+                    .setChannelId(channelId)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .build();
+            notificationManager.notify(1, notification);
         }
         else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-            Log.d("TOMEK", "wyjscie");
-            showNotification("Exited", "Exited the Location");
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("Wyjscie")
+                    .setSmallIcon(R.drawable.ic_add_white_24dp)
+                    .setChannelId(channelId)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .build();
+            notificationManager.notify(1, notification);
         } else {
-            showNotification("Error", "Error");
+
         }
-
-
     }
 
-    public void showNotification(String text, String bigText) {
+    private void notification(){
 
-        // 1. Create a NotificationManager
-        NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // 2. Create a PendingIntent for AllGeofencesActivity
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingNotificationIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // 3. Create and send a notification
-        Notification notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(text)
-                .setContentText(text)
-                .setContentIntent(pendingNotificationIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(bigText))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .build();
-        notificationManager.notify(0, notification);
-    }}
+    }
+}
