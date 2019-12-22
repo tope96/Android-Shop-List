@@ -19,26 +19,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
+import java.util.Collections;
 
 public class Frag_list extends Fragment {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopsColl = db.collection("shops");
     private RecyclerAdapterShops adapter;
+    private GeofencingClient gc;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //just change the fragment_dashboard
-        //with the fragment you want to inflate
-        //like if the class is HomeFragment it should have R.layout.home_fragment
-        //if it is DashboardFragment it should have R.layout.fragment_dashboard
+
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         return rootView;
     }
@@ -88,38 +94,61 @@ public class Frag_list extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                String documentId = adapter.getDocId(viewHolder.getAdapterPosition());
-                db.collection("shops")
-                        .document(documentId)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                adapter.notifyDataSetChanged();
+                final String documentId = adapter.getDocId(viewHolder.getAdapterPosition());
+                gc = LocationServices.getGeofencingClient(getContext());
+
+                final DocumentReference docRef = db.collection("shops").document(documentId);
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                docRef.delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                            }
+                                        });
+                                String name = document.getString("name");
+                                gc.removeGeofences(Collections.singletonList(name))
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                            }
+                                        });
+                            } else {
+
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                            }
-                        });
+                        } else {
+
+                        }
+                    }
+                });
             }
 
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
-               // icon = getDrawable(R.drawable.ic_delete_forever_black_24dp);
+                // icon = getDrawable(R.drawable.ic_delete_forever_black_24dp);
 
                 View itemView = viewHolder.itemView;
                 int backgroundCornerOffset = 20;
 
                 //int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
                 //int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-               // int iconBottom = iconTop + icon.getIntrinsicHeight();
+                // int iconBottom = iconTop + icon.getIntrinsicHeight();
 
                 if (dX > 0) { // Swiping to the right
-                   // int iconLeft = itemView.getLeft() + iconMargin;
+                    // int iconLeft = itemView.getLeft() + iconMargin;
                     //int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
                     //icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 

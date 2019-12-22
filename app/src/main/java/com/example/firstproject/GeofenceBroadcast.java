@@ -18,6 +18,8 @@ import androidx.core.app.NotificationCompat;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.util.List;
+
 public class GeofenceBroadcast extends BroadcastReceiver {
     static final String ACTION_PROCESS_UPDATES =
             "com.example.firstproject.action" +
@@ -26,9 +28,31 @@ public class GeofenceBroadcast extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+
+        if (geofencingEvent.hasError()) {
+            Log.e("TOMEK", "Goefencing Error " + geofencingEvent.getErrorCode());
+            return;
+        }
+
+        List<Geofence> triggeredFences = geofencingEvent.getTriggeringGeofences();
+
+        int geofenceTransition = geofencingEvent.getGeofenceTransition();
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
+            createNotification(context.getString(R.string.enteringShop) + " " + triggeredFences.get(0).getRequestId(), context);
+        }
+        else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            createNotification(context.getString(R.string.leavingShop) + " " + triggeredFences.get(0).getRequestId(), context);
+        } else {
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotification(String shopName, Context context){
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
         String channelId = "some_channel_id";
         CharSequence channelName = "Some Channel";
@@ -40,39 +64,13 @@ public class GeofenceBroadcast extends BroadcastReceiver {
         notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
         notificationManager.createNotificationChannel(notificationChannel);
 
-
-        if (geofencingEvent.hasError()) {
-            Log.e("TOMEK", "Goefencing Error " + geofencingEvent.getErrorCode());
-            return;
-        }
-
-        // Get the transition type.
-        int geofenceTransition = geofencingEvent.getGeofenceTransition();
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            Notification notification = new Notification.Builder(context)
-                    .setContentTitle("Wejscie")
-                    .setSmallIcon(R.drawable.ic_add_white_24dp)
-                    .setChannelId(channelId)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true)
-                    .build();
-            notificationManager.notify(1, notification);
-        }
-        else if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-            Notification notification = new Notification.Builder(context)
-                    .setContentTitle("Wyjscie")
-                    .setSmallIcon(R.drawable.ic_add_white_24dp)
-                    .setChannelId(channelId)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true)
-                    .build();
-            notificationManager.notify(1, notification);
-        } else {
-
-        }
-    }
-
-    private void notification(){
-
+        Notification notification = new Notification.Builder(context)
+                .setContentTitle(shopName)
+                .setSmallIcon(R.drawable.ic_shopping_cart_black_24dp)
+                .setChannelId(channelId)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .build();
+        notificationManager.notify(1, notification);
     }
 }
