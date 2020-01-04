@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -20,19 +21,28 @@ public class listWidget extends AppWidgetProvider {
     private static final String MyOnClick1 = "btGoToWeb";
     private static final String MyOnClick2 = "prev";
     private static final String MyOnClick3 = "next";
+    private static final String MyOnClick4 = "play";
+    private static final String MyOnClick5 = "stop";
+    private static final String MyOnClick6 = "prevMusic";
+    private static final String MyOnClick7 = "nextMusic";
     public static int[] picArray = new int[]{R.drawable.pepefroggie, R.drawable.im, R.drawable.internettroll};
     private static int counter;
-
+    private static int plays;
+    static MediaPlayer mPlay = new MediaPlayer();
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
+        mPlay = MediaPlayer.create(context, R.raw.drums);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.list_widget);
         views.setOnClickPendingIntent(R.id.btGoToWeb, getPendingSelfIntent(context, MyOnClick1));
         views.setOnClickPendingIntent(R.id.btPrev, getPendingSelfIntent(context, MyOnClick2));
         views.setOnClickPendingIntent(R.id.btNext, getPendingSelfIntent(context, MyOnClick3));
+        views.setOnClickPendingIntent(R.id.btPlayMusic, getPendingSelfIntent(context, MyOnClick4));
+        views.setOnClickPendingIntent(R.id.btStopMusic, getPendingSelfIntent(context, MyOnClick5));
+        views.setOnClickPendingIntent(R.id.btPrevMusic, getPendingSelfIntent(context, MyOnClick6));
+        views.setOnClickPendingIntent(R.id.btNextMusic, getPendingSelfIntent(context, MyOnClick7));
         counter = 0;
-
+    plays =0;
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -65,13 +75,14 @@ public class listWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.list_widget);
+
+
         if (MyOnClick1.equals(intent.getAction())){
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
             context.startActivity(browserIntent);
         }
         if(MyOnClick2.equals(intent.getAction())){
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.list_widget);
-
             if(counter == 0){
                 Log.d("Tomek", "Jest 0");
                 counter = picArray.length-1;
@@ -87,8 +98,6 @@ public class listWidget extends AppWidgetProvider {
         }
 
         if(MyOnClick3.equals(intent.getAction())){
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.list_widget);
-
             if(counter == (picArray.length-1)){
                 counter = 0;
                 views.setImageViewResource(R.id.imageView4, picArray[counter]);
@@ -101,8 +110,19 @@ public class listWidget extends AppWidgetProvider {
                 AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, listWidget.class), views);
             }
 
-
-
+        }
+        if (MyOnClick4.equals(intent.getAction())){
+            if(mPlay.isPlaying()){
+                mPlay.pause();
+            } else {
+                mPlay.start();
+            }
+        }
+        if (MyOnClick5.equals(intent.getAction())){
+            if(mPlay.isPlaying()){
+                mPlay.stop();
+                mPlay = MediaPlayer.create(context, R.raw.drums);
+            }
         }
     }
 }
