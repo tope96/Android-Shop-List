@@ -26,4 +26,6 @@
     <string name="shopRadHint">promień</string>
     <string name="shopRadUnit">m</string>
     <string name="turnOnLoc">Musisz włączyć lokalizację.</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

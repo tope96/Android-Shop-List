@@ -14,14 +14,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver android:name=".listWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/list_widget_info" />
+        </receiver>
 
         <activity android:name=".AddShopActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBV8lYWAuUfHzK8XcyR3MUAI6nudjQQu3s" />
-
         <activity android:name=".EditItemActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".AddItemActivity" />
@@ -40,20 +47,15 @@
         </activity>
 
         <receiver
-            android:name="com.example.firstproject.GeofenceBroadcast"
-            android:exported="true"
-            android:enabled="true">
-
-        </receiver>
-
-        <receiver android:name=".BootCompleteReceiver" >
+            android:name=".GeofenceBroadcast"
+            android:enabled="true"
+            android:exported="true"></receiver>
+        <receiver android:name=".BootCompleteReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
-
     </application>
 
 </manifest>
