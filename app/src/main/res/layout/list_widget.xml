@@ -13,23 +13,25 @@
 
         <Button
             android:id="@+id/btGoToWeb"
+            style="@android:style/Widget.Material.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:onClick="goTo"
             android:text="Otwórz Google" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
-            <Button
+            <ImageView
                 android:id="@+id/btPrev"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="63dp"
+                android:layout_height="99dp"
                 android:layout_weight="1"
-                android:text="Poprzedni"
-                />
+                android:src="@drawable/ic_chevron_left_black_24dp" />
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -39,12 +41,13 @@
                 android:paddingRight="20px"
                 android:src="@drawable/pepefroggie" />
 
-            <Button
+            <ImageView
                 android:id="@+id/btNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="63dp"
+                android:layout_height="99dp"
                 android:layout_weight="1"
-                android:text="Następny" />
+                android:src="@drawable/ic_chevron_right_black_24dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -52,33 +55,34 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Button
+            <ImageView
                 android:id="@+id/btPrevMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Prev" />
+                android:src="@drawable/ic_skip_previous_white_24dp" />
 
-            <Button
+            <ImageView
                 android:id="@+id/btPlayMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Play" />
+                android:src="@drawable/ic_play_arrow_white_24dp" />
 
-            <Button
+            <ImageView
                 android:id="@+id/btStopMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Stop" />
+                android:src="@drawable/ic_stop_white_24dp" />
 
-            <Button
+            <ImageView
                 android:id="@+id/btNextMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Next" />
+                android:src="@drawable/ic_skip_next_white_24dp" />
+
         </LinearLayout>
 
     </LinearLayout>
