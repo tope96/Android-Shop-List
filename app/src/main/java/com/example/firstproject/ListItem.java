@@ -7,41 +7,39 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "product")
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
+
 public class ListItem {
     private int price;
     private int count;
     private boolean bought;
-    @PrimaryKey
-    @NonNull
     private String name;
-    public static final String COLUMN_ID = BaseColumns._ID;
+    private String uid;
+    private Timestamp timestamp;
 
-    /** The name of the name column. */
-    public static final String COLUMN_NAME = "name";
 
-    public ListItem(String name, int price, int count, boolean bought) {
+
+    public ListItem(String name, int price, int count, boolean bought, String uid, Timestamp timestamp) {
         this.name = name;
         this.price = price;
         this.count = count;
         this.bought = bought;
+        this.uid = uid;
+        this.timestamp = timestamp;
     }
 
-    public static ListItem fromContentValues(ContentValues values) {
-        final ListItem listItem = new ListItem(values.getAsString("name"), values.getAsInteger("price"), values.getAsInteger("count"), values.getAsBoolean("bought"));
-        if (values.containsKey(COLUMN_ID)) {
-            listItem.name = values.getAsString(COLUMN_ID);
-        }
+    public ListItem(){
 
-        return listItem;
     }
-
 
     public String getName() {
         return name;
     }
 
-    public void setName(@NonNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -67,6 +65,22 @@ public class ListItem {
 
     public void setBought(boolean bought) {
         this.bought = bought;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

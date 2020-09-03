@@ -10,4 +10,22 @@
     <string name="saveSuccess">Zapisano!</string>
     <string name="productExists">Taki produkt już istnieje. Wybierz inną nazwę.</string>
     <string name="productEmpty">Nie możesz dodać pustego produktu.</string>
+    <string name="textRequire">Wymagane!</string>
+    <string name="SignUpFailed">Nie udało się utworzyć konta</string>
+    <string name="LogInFailed">Nie udało się zalogować</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enteringShop">Wlasnie wszedłeś do sklepu:</string>
+    <string name="leavingShop">Uwaga! Wyszedłeś ze sklepu:</string>
+    <string name="shopName">Nazwa sklepu:</string>
+    <string name="shopNameHint">nazwa</string>
+    <string name="shopDesc">Opis sklepu:</string>
+    <string name="shopDescHint">opis</string>
+    <string name="shopRad">Dokładność:</string>
+    <string name="shopRadHint">promień</string>
+    <string name="shopRadUnit">m</string>
+    <string name="turnOnLoc">Musisz włączyć lokalizację.</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

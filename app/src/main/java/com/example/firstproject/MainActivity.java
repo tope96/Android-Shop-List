@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if(firebaseUser == null){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            startActivity(intent);
+            finish();
+        }
+
         preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         boolean darkMode = preferences.getBoolean("darkTheme", true);
         changeTheme(darkMode);
@@ -51,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     public void listShow(View view) {
@@ -73,8 +86,13 @@ public class MainActivity extends AppCompatActivity {
         }else{
             setTheme(R.style.AppTheme);
         }
-
     }
 
 
+    public void favsShow(View view) {
+        boolean darkMode = preferences.getBoolean("darkTheme", true);
+        Intent in = new Intent(this, FavouriteShopsListActivity.class);
+        in.putExtra("darkMode", darkMode);
+        startActivity(in);
+    }
 }
